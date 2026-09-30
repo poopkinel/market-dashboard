@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Market Data Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="page-header">
+    <h1>Market Data Dashboard</h1>
+    <p class="muted">Crypto prices from CoinGecko and Binance, processed on this server, with AI insights from your local Ollama.</p>
+  </header>
+
+  <main>
+    <!-- 1. Current prices -->
+    <section class="card" aria-labelledby="prices-title">
+      <div class="card-head">
+        <h2 id="prices-title">Current prices</h2>
+        <div class="controls">
+          <label>Source
+            <select id="price-source">
+              <option value="coingecko">CoinGecko</option>
+              <option value="binance">Binance</option>
+            </select>
+          </label>
+          <button id="price-refresh" type="button">Refresh prices</button>
+        </div>
+      </div>
+      <p id="price-status" class="status muted" role="status"></p>
+      <div class="table-wrap"><table id="price-table" class="data-table" hidden>
+        <thead><tr><th>Symbol</th><th class="num">Price</th><th>Currency</th><th>Source</th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </section>
+
+    <!-- 2. Analysis job -->
+    <section class="card" aria-labelledby="analysis-title">
+      <div class="card-head">
+        <h2 id="analysis-title">Historical analysis</h2>
+        <form id="job-form" class="controls">
+          <label>Symbol <input id="job-symbol" value="BTC" size="6" required></label>
+          <label>Candle
+            <select id="job-interval">
+              <option value="15m">15 minutes</option>
+              <option value="1h" selected>1 hour</option>
+              <option value="4h">4 hours</option>
+              <option value="1d">1 day</option>
+            </select>
+          </label>
+          <label>Days <input id="job-days" type="number" min="1" max="365" value="30"></label>
+          <button id="job-start" type="submit">Start analysis</button>
+        </form>
+      </div>
+      <p id="job-status" class="status muted" role="status">Start an analysis to fetch history in the background and run it through the engine.</p>
+
+      <div id="job-results" hidden>
+        <div id="stat-tiles" class="tiles"></div>
+        <figure class="chart-figure">
+          <figcaption id="chart-title" class="chart-title"></figcaption>
+          <div id="chart" class="chart"></div>
+        </figure>
+        <details>
+          <summary>Show chart data as a table</summary>
+          <div class="table-wrap"><table id="series-table" class="data-table">
+            <thead><tr><th>Time</th><th class="num">Close</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 3. AI insight -->
+    <section class="card" aria-labelledby="ai-title">
+      <div class="card-head">
+        <h2 id="ai-title">AI insight</h2>
+      </div>
+      <div class="ai-grid">
+        <div>
+          <p class="muted">Classify the analysis shown above.</p>
+          <button id="ai-job" type="button" disabled>Get AI insight for this analysis</button>
+        </div>
+        <div>
+          <label for="ai-text" class="muted">Or classify any text, e.g. a news headline:</label>
+          <textarea id="ai-text" rows="3" maxlength="4000" placeholder="Bitcoin ETF inflows hit a record high this week"></textarea>
+          <button id="ai-text-button" type="button">Classify text</button>
+        </div>
+      </div>
+      <p id="ai-status" class="status muted" role="status"></p>
+      <div id="ai-result" class="ai-result" hidden>
+        <div class="badges">
+          <span id="ai-sentiment" class="badge"></span>
+          <span id="ai-risk" class="badge"></span>
+        </div>
+        <p id="ai-summary"></p>
+        <p id="ai-model" class="muted small"></p>
+      </div>
+    </section>
+
+    <!-- 4. Recent jobs -->
+    <section class="card" aria-labelledby="jobs-title">
+      <div class="card-head">
+        <h2 id="jobs-title">Recent analyses</h2>
+        <button id="jobs-refresh" type="button" class="secondary">Refresh list</button>
+      </div>
+      <div class="table-wrap"><table id="jobs-table" class="data-table">
+        <thead><tr><th>Started</th><th>Symbol</th><th>Candle</th><th class="num">Days</th><th>Status</th><th class="num">Rows</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+    </section>
+
+    <!-- 5. Telemetry -->
+    <section class="card" aria-labelledby="telemetry-title">
+      <details id="telemetry-details">
+        <summary><h2 id="telemetry-title" class="inline">Server telemetry</h2></summary>
+        <button id="telemetry-refresh" type="button" class="secondary">Refresh</button>
+        <div class="table-wrap"><table id="telemetry-table" class="data-table">
+          <thead><tr><th>Function</th><th class="num">Calls</th><th class="num">Errors</th><th class="num">Average ms</th><th class="num">Slowest ms</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </details>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
